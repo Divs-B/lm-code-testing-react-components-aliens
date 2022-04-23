@@ -3,31 +3,14 @@ import W12MHeader from "./W12MHeader";
 import W12MTextBox from "./W12MTextBox";
 import W12MSelectBox from "./W12MSelectBox";
 import W12MTextAreaBox from "./W12MTextAreaBox";
+import TextBoxStructure from "../data/textbox-struct";
+import SelectBoxStructure from "../data/selectbox-struct";
+import TextAreaStructure from "../data/textarea-struct";
 
 interface W12MFormProps {
-  allTextBoxes: Array<{
-    id: string;
-    title: string;
-    min: string;
-    max: string;
-    pattern: string;
-    displayError: boolean;
-    errMessage: string;
-  }>;
-  allSelectBoxes: Array<{
-    id: string;
-    title: string;
-    option1: string;
-    option2: string;
-  }>;
-  allTextAreaBoxes: Array<{
-    id: string;
-    title: string;
-    min: number;
-    max: number;
-    displayError: boolean;
-    errMessage: string;
-  }>;
+  allTextBoxes: Array<TextBoxStructure>;
+  allSelectBoxes: Array<SelectBoxStructure>;
+  allTextAreaBoxes: Array<TextAreaStructure>;
 }
 
 const W12MForm: React.FC<W12MFormProps> = ({
@@ -45,23 +28,37 @@ const W12MForm: React.FC<W12MFormProps> = ({
 
   const onChangeTextBox = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.dataset.testid === "speciesName") {
-      allTextBoxes[0].displayError = false;
-      setSpeciesTextBoxInfo(event.target.value);
+      const minNumber = Number.parseInt(event.target.min);
+      const maxNumber = Number.parseInt(event.target.max);
       allTextBoxes[0].displayError = validate(
         event.target.pattern,
-        event.target.value
+        event.target.value,
+        minNumber,
+        maxNumber,
+        -1
       );
+      setSpeciesTextBoxInfo(event.target.value);
     } else if (event.target.dataset.testid === "planetName") {
       setPlanetTextBoxInfo(event.target.value);
+      const minNumber = Number.parseInt(event.target.min);
+      const maxNumber = Number.parseInt(event.target.max);
       allTextBoxes[1].displayError = validate(
         event.target.pattern,
-        event.target.value
+        event.target.value,
+        minNumber,
+        maxNumber,
+        -1
       );
     } else if (event.target.dataset.testid === "numberOfBeings") {
       setBeingNumberTextBoxInfo(event.target.value);
+      const minNumber = Number.parseInt(event.target.min);
+      const maxNumber = Number.parseInt(event.target.max);
       allTextBoxes[2].displayError = validate(
         event.target.pattern,
-        event.target.value
+        event.target.value,
+        minNumber,
+        maxNumber,
+        -1
       );
     }
     let count = 0;
@@ -73,6 +70,13 @@ const W12MForm: React.FC<W12MFormProps> = ({
 
   const onChangeSelectBox = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectBoxInfo(event.target.value);
+    allSelectBoxes[0].displayError = validate(
+      "",
+      event.target.value,
+      "",
+      "",
+      event.target.selectedIndex
+    );
     let count = 0;
     count += 1;
     console.log(
@@ -87,6 +91,14 @@ const W12MForm: React.FC<W12MFormProps> = ({
     event: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     setTextAreaBoxInfo(event.target.value);
+    allTextAreaBoxes[0].displayError = validate(
+      "",
+      event.target.value,
+      event.target.minLength,
+      event.target.maxLength,
+      -1
+    );
+
     let count = 0;
     count += 1;
     console.log(
@@ -97,9 +109,26 @@ const W12MForm: React.FC<W12MFormProps> = ({
     );
   };
 
-  const validate = (fieldPattern: string, value: string): boolean => {
-    var regEX = new RegExp(fieldPattern);
-    return regEX.test(value);
+  const validate = (
+    fieldPattern: string,
+    value: string,
+    min: number,
+    max: number,
+    optionIndex: number
+  ): boolean => {
+    let isPatternMatched = false;
+
+    if (fieldPattern.length > 0) {
+      const regEx = new RegExp(fieldPattern);
+      isPatternMatched = regEx.test(value);
+      if (!isPatternMatched) return true;
+    }
+
+    if (optionIndex !== -1) {
+      if (optionIndex !== 0) return true;
+    } else if (value.length < min || value.length > max) return true;
+
+    return false;
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -116,35 +145,18 @@ const W12MForm: React.FC<W12MFormProps> = ({
   return (
     <form onSubmit={handleSubmit} data-testid="w12MForm" className="w12MForm">
       <W12MHeader />
-      {allTextBoxes.map((textbox, index) => (
-        <W12MTextBox
-          id={textbox.id}
-          title={textbox.title}
-          min={textbox.min}
-          max={textbox.max}
-          pattern={textbox.pattern}
-          displayError={textbox.displayError}
-          errMessage={textbox.errMessage}
-          onChange={onChangeTextBox}
-        />
+      {allTextBoxes.map((textbox) => (
+        <W12MTextBox textboxObject={textbox} onChange={onChangeTextBox} />
       ))}
       {allSelectBoxes.map((selectbox) => (
         <W12MSelectBox
-          id={selectbox.id}
-          title={selectbox.title}
-          option1={selectbox.option1}
-          option2={selectbox.option2}
+          selectboxObject={selectbox}
           onChange={onChangeSelectBox}
         />
       ))}
       {allTextAreaBoxes.map((textareabox) => (
         <W12MTextAreaBox
-          id={textareabox.id}
-          title={textareabox.title}
-          min={textareabox.min}
-          max={textareabox.max}
-          displayError={textareabox.displayError}
-          errMessage={textareabox.errMessage}
+          textareaObject={textareabox}
           onChange={onChangeTextAreaBox}
         />
       ))}

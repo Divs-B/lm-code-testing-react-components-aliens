@@ -65,63 +65,18 @@ test("renders form element", () => {
   });
   fireEvent.submit(form);
   expect(input.value).toBe("genius");
+
   const input1 = screen.getByTestId("planetName");
   fireEvent.change(input1, {
     target: { value: ",genius" },
   });
   fireEvent.submit(form);
   expect(input1.value).toBe(",genius");
-  //expect(screen.getByText("genius,genius")).toBeInTheDocument();
-});
 
-test("calls onChange function", () => {
-  const textBox_speciesName = {
-    id: "speciesName",
-    title: "Species Name",
-  };
-  const textBox_planetName = {
-    id: "planetName",
-    title: "Planet Name",
-  };
-  const textBox_numberOfBeings = {
-    id: "numberOfBeings",
-    title: "Number of beings",
-  };
-  const selectBox_whatIs2Add2 = {
-    id: "whatIs2Add2",
-    title: "What is 2+2",
-    option1: "4",
-    option2: "Not 4",
-  };
-  const textAreaBox_reasonForSparing = {
-    id: "reasonForSparing",
-    title: "Reason for sparing",
-  };
-
-  const allTextBoxes = [
-    textBox_speciesName,
-    textBox_planetName,
-    textBox_numberOfBeings,
-  ];
-  const allSelectBoxes = [selectBox_whatIs2Add2];
-  const allTextAreaBoxes = [textAreaBox_reasonForSparing];
-
-  const { container } = render(
-    <W12MForm
-      allTextBoxes={allTextBoxes}
-      allSelectBoxes={allSelectBoxes}
-      allTextAreaBoxes={allTextAreaBoxes}
-    />
-  );
-  // const textBox_speciesName = {
-  //   id: "",
-  //   title: "",
-  //   onChangeTextBox: jest.fn(),
-  // };
-  // render(<W12MTextBox {...textBox_speciesName} />);
-  const input = screen.getByTestId("speciesName");
-  fireEvent.change(input, {
-    target: { value: "humanss" },
+  const input2 = screen.getByTestId("planetName");
+  fireEvent.change(input1, {
+    target: { value: "***" },
   });
-  expect(input.value).toBe("humanss");
+
+  expect(screen.getAllByTestId("errormessage")[0]).toBeInTheDocument(); //check validation
 });

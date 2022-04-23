@@ -1,44 +1,33 @@
 import React from "react";
+import TextBoxStructure from "../data/textbox-struct";
 
 interface TextBoxProps {
-  id: string;
-  title: string;
-  min: string;
-  max: string;
-  pattern: string;
-  displayError: boolean;
-  errMessage: string;
+  textboxObject: TextBoxStructure;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const TextBox: React.FC<TextBoxProps> = ({
-  id,
-  title,
-  min,
-  max,
-  pattern,
-  displayError,
-  errMessage,
-  onChange,
-}) => {
+const TextBox: React.FC<TextBoxProps> = ({ textboxObject, onChange }) => {
   return (
     <div>
-      <label className="form-control" htmlFor={id}>
-        {title}
+      <label className="form-control" htmlFor={textboxObject.id}>
+        {textboxObject.title}
       </label>
       <input
         className="form-control"
-        data-testid={id}
+        data-testid={textboxObject.id}
         type="text"
-        min={min}
-        max={max}
-        pattern={pattern}
-        title="Must contain 3 letters and should only be aplphabets!"
+        min={textboxObject.min}
+        max={textboxObject.max}
+        pattern={textboxObject.pattern}
         onChange={onChange}
         required
       />
-      <p hidden={displayError} className="error">
-        {errMessage}
+      <p
+        data-testid="errormessage"
+        hidden={!textboxObject.displayError}
+        className="error"
+      >
+        {textboxObject.errMessage}
       </p>
     </div>
   );
