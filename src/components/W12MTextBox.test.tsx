@@ -23,6 +23,29 @@ test("textbox render test", () => {
   expect(textBox).toBeInTheDocument();
 });
 
+test("textbox value on Onchange test", () => {
+  const textBox_test_speciesName = {
+    id: "speciesName",
+    title: "Species Name",
+    min: "3",
+    max: "23",
+    pattern: "^[a-zA-Z ]+$",
+    displayError: false,
+    errMessage:
+      "Error - Please follow the rules : Enter only alphabets, atleast 3 characters and maximum 17 characters!",
+  };
+  const TextBoxProps = {
+    textboxObject: textBox_test_speciesName,
+    onChange: jest.fn(),
+  };
+  render(<W12MTextBox {...TextBoxProps} />);
+  const textBox = screen.getByTestId("speciesName");
+  fireEvent.change(textBox, {
+    target: { value: "genius" },
+  });
+  expect(textBox.value).toBe("genius");
+});
+
 test("textbox errormessage render test", () => {
   const textBox_test_planetName = {
     id: "planetName",
@@ -40,28 +63,25 @@ test("textbox errormessage render test", () => {
   };
   render(<W12MTextBox {...TextBoxProps} />);
   const errMsg = screen.getByTestId("errormessage");
-  //expect(errMsg).toHaveFormValues('t');
-
-  // fireEvent.change(textBox, {
-  //   target: { value: "humans" },
-  // });
-  // expect(textBox.innerText).toBe("humans");
-  // expect(TextBoxProps.onChange).toHaveBeenCalled();
-  // expect(TextBoxProps.onChange).toHaveBeenCalledTimes(6);
+  expect(errMsg).toBeInTheDocument();
 });
 
-// test("calls onChange function with passed onChangeSpeciesName prop", async () => {
-//   const textBox_speciesName = {
-//     id: "",
-//     title: "",
-//     onChangeTextBox: jest.fn(),
-//   };
-//   render(<W12MTextBox {...textBox_speciesName} />);
-//   const textBox = screen.getByLabelText("speciesName");
-//   fireEvent.change(textBox, {
-//     target: { value: "humans" },
-//   });
-//   expect(textBox.innerText).toBe("humans");
-//   expect(textBox_speciesName.onChangeTextBox).toHaveBeenCalled();
-//   expect(textBox_speciesName.onChangeTextBox).toHaveBeenCalledTimes(6);
-// });
+test("textbox errormessage visibility test", () => {
+  const textBox_test_numberOfBeings = {
+    id: "numberOfBeings",
+    title: "Number of beings",
+    min: "10",
+    max: "20",
+    pattern: "^[0-9]+$",
+    displayError: false,
+    errMessage:
+      "Error - Please follow the rules : Enter only numbers, atleast 10 digit number!",
+  };
+  const TextBoxProps = {
+    textboxObject: textBox_test_numberOfBeings,
+    onChange: jest.fn(),
+  };
+  render(<W12MTextBox {...TextBoxProps} />);
+  const errMsg = screen.getByTestId("errormessage");
+  expect(errMsg).toHaveProperty("hidden", true);
+});

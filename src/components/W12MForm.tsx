@@ -73,8 +73,8 @@ const W12MForm: React.FC<W12MFormProps> = ({
     allSelectBoxes[0].displayError = validate(
       "",
       event.target.value,
-      "",
-      "",
+      -1,
+      -1,
       event.target.selectedIndex
     );
     let count = 0;
@@ -126,20 +126,34 @@ const W12MForm: React.FC<W12MFormProps> = ({
 
     if (optionIndex !== -1) {
       if (optionIndex !== 0) return true;
-    } else if (value.length < min || value.length > max) return true;
+    } else if (
+      min !== -1 &&
+      max !== -1 &&
+      (value.length < min || value.length > max)
+    )
+      return true;
 
     return false;
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    const allValues = speciesTextBoxInfo
-      .concat(planetTextBoxInfo)
-      .concat(beingsNumberTextBoxInfo)
-      .concat(selectBoxInfo)
-      .concat(textAreaBoxInfo);
-    setItems(allValues);
+    let allValues = "";
+    if (
+      !allTextBoxes[0].displayError &&
+      !allTextBoxes[1].displayError &&
+      !allTextBoxes[2].displayError &&
+      !allSelectBoxes[0].displayError &&
+      !allTextAreaBoxes[0].displayError
+    ) {
+      allValues = speciesTextBoxInfo
+        .concat(planetTextBoxInfo)
+        .concat(beingsNumberTextBoxInfo)
+        .concat(selectBoxInfo)
+        .concat(textAreaBoxInfo);
+      setItems(allValues);
+    }
     event.preventDefault();
-    console.log("OnSUbmit------->>>" + allValues);
+    console.log("OnSubmit------->>>" + allValues);
   };
 
   return (
@@ -166,6 +180,7 @@ const W12MForm: React.FC<W12MFormProps> = ({
         value="Submit"
         className="btn btn-primary"
       />
+      <p data-testid="data-onsubmit">{items}</p>
     </form>
   );
 };

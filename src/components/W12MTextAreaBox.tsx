@@ -24,7 +24,11 @@ const TextAreaBox: React.FC<TextAreaBoxProps> = ({
           required
         ></textarea>
       </p>
-      <p hidden={!textareaObject.displayError} className="error">
+      <p
+        data-testid="errormessage"
+        hidden={!textareaObject.displayError}
+        className="error"
+      >
         {textareaObject.errMessage}
       </p>
     </div>

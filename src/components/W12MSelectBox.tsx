@@ -20,7 +20,11 @@ const SelectBox: React.FC<SelectBoxProps> = ({ selectboxObject, onChange }) => {
         <option>{selectboxObject.option2}</option>
         required
       </select>
-      <p hidden={!selectboxObject.displayError} className="error">
+      <p
+        data-testid="errormessage"
+        hidden={!selectboxObject.displayError}
+        className="error"
+      >
         {selectboxObject.errMessage}
       </p>
     </div>
