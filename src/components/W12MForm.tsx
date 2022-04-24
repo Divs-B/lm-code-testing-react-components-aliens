@@ -20,11 +20,10 @@ const W12MForm: React.FC<W12MFormProps> = ({
 }) => {
   const [speciesTextBoxInfo, setSpeciesTextBoxInfo] = useState<string>("");
   const [planetTextBoxInfo, setPlanetTextBoxInfo] = useState<string>("");
-  const [beingsNumberTextBoxInfo, setBeingNumberTextBoxInfo] =
-    useState<string>("");
+  const [beingsTextBoxInfo, setBeingTextBoxInfo] = useState<string>("");
   const [selectBoxInfo, setSelectBoxInfo] = useState<string>("");
   const [textAreaBoxInfo, setTextAreaBoxInfo] = useState<string>("");
-  const [items, setItems] = useState<string>("");
+  const [dataOnSubmit, setDataOnSubmit] = useState<string>("");
 
   const onChangeTextBox = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.dataset.testid === "speciesName") {
@@ -50,7 +49,7 @@ const W12MForm: React.FC<W12MFormProps> = ({
         -1
       );
     } else if (event.target.dataset.testid === "numberOfBeings") {
-      setBeingNumberTextBoxInfo(event.target.value);
+      setBeingTextBoxInfo(event.target.value);
       const minNumber = Number.parseInt(event.target.min);
       const maxNumber = Number.parseInt(event.target.max);
       allTextBoxes[2].displayError = validate(
@@ -61,11 +60,6 @@ const W12MForm: React.FC<W12MFormProps> = ({
         -1
       );
     }
-    let count = 0;
-    count += 1;
-    console.log(
-      "textbox change called " + event.target.value + " count------>>" + count
-    );
   };
 
   const onChangeSelectBox = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -76,14 +70,6 @@ const W12MForm: React.FC<W12MFormProps> = ({
       -1,
       -1,
       event.target.selectedIndex
-    );
-    let count = 0;
-    count += 1;
-    console.log(
-      "select box change called " +
-        event.target.value +
-        " count------>>" +
-        count
     );
   };
 
@@ -97,15 +83,6 @@ const W12MForm: React.FC<W12MFormProps> = ({
       event.target.minLength,
       event.target.maxLength,
       -1
-    );
-
-    let count = 0;
-    count += 1;
-    console.log(
-      "text area box change called " +
-        event.target.value +
-        " count------>>" +
-        count
     );
   };
 
@@ -147,13 +124,12 @@ const W12MForm: React.FC<W12MFormProps> = ({
     ) {
       allValues = speciesTextBoxInfo
         .concat(planetTextBoxInfo)
-        .concat(beingsNumberTextBoxInfo)
+        .concat(beingsTextBoxInfo)
         .concat(selectBoxInfo)
         .concat(textAreaBoxInfo);
-      setItems(allValues);
+      setDataOnSubmit(allValues);
     }
     event.preventDefault();
-    console.log("OnSubmit------->>>" + allValues);
   };
 
   return (
@@ -180,7 +156,7 @@ const W12MForm: React.FC<W12MFormProps> = ({
         value="Submit"
         className="btn btn-primary"
       />
-      <p data-testid="data-onsubmit">{items}</p>
+      <p data-testid="data-onsubmit">{dataOnSubmit}</p>
     </form>
   );
 };
